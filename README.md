@@ -1,8 +1,5 @@
 # Luxel
 
-![Luxel Banner](https://via.placeholder.com/1200x400.png?text=Luxel+-+Real-Time+Voxel+Ray+Tracing)  
-*(Replace with a screenshot or render of your project once available)*
-
 **Luxel** is a real-time voxel-based ray tracing renderer built from scratch using C++ and Vulkan. It combines the efficiency of voxel data structures with the visual fidelity of ray tracing to create dynamic and interactive 3D scenes.
 
 ---
