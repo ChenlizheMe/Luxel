@@ -7,9 +7,9 @@ namespace Luxel
 		"VK_LAYER_KHRONOS_validation"
 	};
 
-	Device::Device(const char* appName, bool enableValidation, const std::vector<const char*>& enableExtensions, GLFWwindow* window) : enableValidationLayers(enableValidation)
+	Device::Device(const char* appName, bool enableValidation, GLFWwindow* window) : enableValidationLayers(enableValidation)
 	{
-		CreateInstance(appName, enableExtensions);
+		CreateInstance(appName);
 		SetupDebugMessenger();
 		CreateSurface(window);
 		PickupPhysicaclDevice();
@@ -35,7 +35,22 @@ namespace Luxel
 		return device;
 	}
 
-	void Device::CreateInstance(const char* appName, const std::vector<const char*>& enableExtentions)
+	VkPhysicalDevice Device::GetPhysicalDevice()
+	{
+		return physicalDevice;
+	}
+
+	VkSurfaceKHR Device::GetSurface()
+	{
+		return surface;
+	}
+
+	QueueFamilyIndices Device::GetQueueFamilyIndices()
+	{
+		return queueFamilyIndices;
+	}
+
+	void Device::CreateInstance(const char* appName)
 	{
 		Info("Create Vulkan Instance.");
 		// create appInfo
@@ -59,7 +74,7 @@ namespace Luxel
 		// merge all enable extensions
 		std::vector<const char*> mergeExtentions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-		for (const auto& extension : enableExtentions) {
+		for (const auto& extension : globalExtensions) {
 			if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)continue;
 			mergeExtentions.emplace_back(extension);
 		}
@@ -84,9 +99,9 @@ namespace Luxel
 		createInfo.enabledExtensionCount = static_cast<ui32>(mergeExtentions.size());
 		createInfo.ppEnabledExtensionNames = mergeExtentions.data();
 
-		Info(mergeExtentions.size(), "extensions used.");
+		Info(mergeExtentions.size(), "global extensions loaded.");
 		for (const auto extension : mergeExtentions) {
-			Info("extension:", extension);
+			Info("Load global extension:", extension);
 		}
 
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
@@ -190,7 +205,12 @@ namespace Luxel
 		deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
 		
 		// set vk device extensions/layers
-		deviceCreateInfo.enabledExtensionCount = 0;
+		const std::vector<const char*> deviceExtensions =
+		{ 
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME 
+		};
+		deviceCreateInfo.enabledExtensionCount = deviceExtensions.size();
+		deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
 		if (enableValidationLayers) {
 			deviceCreateInfo.enabledLayerCount = 1;
 			deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
@@ -199,6 +219,11 @@ namespace Luxel
 		if (vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device) != VK_SUCCESS) {
 			Error("Failed to create logical device.");
 			throw std::runtime_error("Failed to create logical device.");
+		}
+
+		Info(deviceExtensions.size(), "device extensions loaded.");
+		for (const auto& extension : deviceExtensions) {
+			Info("Load device extension:", extension);
 		}
 
 		// create handle of queues
@@ -400,9 +425,20 @@ namespace Luxel
 
 		QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(device, false);
 
-		return 
-			features.geometryShader &&  
-			properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && 
-			queueFamilyIndices.isComplete();
+		// check device extension supported.
+		ui32 extensionCount = 0;
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+		std::vector<VkExtensionProperties> supportedDeviceExtensions(extensionCount);
+		vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, supportedDeviceExtensions.data());
+		std::set<std::string> requiredDeviceExtensinos(deviceExtensions.begin(), deviceExtensions.end());
+		for (const auto& extension : supportedDeviceExtensions) {
+			requiredDeviceExtensinos.erase(extension.extensionName);
+		}
+
+		return
+			features.geometryShader &&
+			properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
+			queueFamilyIndices.isComplete() &&
+			requiredDeviceExtensinos.empty();
 	}
 }

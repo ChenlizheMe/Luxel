@@ -7,6 +7,8 @@
 #include <fstream>
 #include <stdexcept>
 #include <optional>
+#include <limits>
+#include <algorithm>
 
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>

@@ -20,13 +20,18 @@ namespace Luxel
 	class LUXEL_API Device
 	{
 	public:
-		Device(const char* appName, bool enableValidation, const std::vector<const char*>& enableExtentions, GLFWwindow* window);
+		Device(const char* appName, bool enableValidation, GLFWwindow* window);
 		~Device();
+		Device(const Device&) = delete;
+		void operator=(const Device&) = delete;
 
 		VkDevice GetDevice();
+		VkPhysicalDevice GetPhysicalDevice();
+		VkSurfaceKHR GetSurface();
+		QueueFamilyIndices GetQueueFamilyIndices();
 
 	private:
-		void CreateInstance(const char* appName, const std::vector<const char*>& enableExtentions);
+		void CreateInstance(const char* appName);
 		void SetupDebugMessenger();
 		void CreateSurface(GLFWwindow* window);
 		void PickupPhysicaclDevice();
@@ -75,5 +80,12 @@ namespace Luxel
 		QueueFamilyIndices queueFamilyIndices;
 		VkQueue graphicsQueue;
 		VkQueue presentQueue;
+
+		const std::vector<const char*> globalExtensions = {
+
+		};
+		const std::vector<const char*> deviceExtensions = {
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+		};
 	};
 }

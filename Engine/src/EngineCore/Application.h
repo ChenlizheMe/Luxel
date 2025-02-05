@@ -7,6 +7,7 @@
 #include "log.h"
 #include "RenderPipeline.h"
 #include "Device.h"
+#include "SwapChain.h"
 
 namespace Luxel
 {
@@ -22,7 +23,9 @@ namespace Luxel
 	private:
 		GLFWwindow* window;
 		RenderPipeline* renderPipeline;
+		SwapChain* swapChain;
 		Device* device;
+		
 	};
 
 	Application* CreateApplication();

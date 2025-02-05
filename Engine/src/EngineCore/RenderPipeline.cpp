@@ -94,6 +94,7 @@ namespace Luxel
 
 		return config;
 	}
+
 	std::vector<char> RenderPipeline::readFile(const std::string& filePath)
 	{
 		std::ifstream file{
@@ -201,9 +202,8 @@ namespace Luxel
 		}
 	}
 
-	RenderPipeline::RenderPipeline(Device* d, const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo) : device{d}
+	RenderPipeline::RenderPipeline(Device* const d, const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo) : device{d}
 	{
-		graphicsPipeline = VkPipeline();
 		CreateGraphicsPipeline(vertPath, fragPath, configInfo);
 	}
 

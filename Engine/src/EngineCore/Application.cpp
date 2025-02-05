@@ -47,9 +47,12 @@ namespace Luxel
 
 		// setup devices
 		Info("Setup device.");
-		std::vector<const char*> enableExtensions;
 		//device = new Device(name, true, enableExtensions, window);
-		device = new Device{ name, true, enableExtensions, window };
+		device = new Device{ name, true, window };
+
+		// create swap chain
+		Info("Create swap chain.");
+		swapChain = new SwapChain(window, device);
 
 		// create render pipeline
 		Info("Create render pipeline.");

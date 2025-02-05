@@ -39,6 +39,9 @@
     <ClInclude Include="src\EngineCore\Device.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\EngineCore\SwapChain.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EngineCore\Application.cpp">
@@ -54,6 +57,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\EngineCore\Device.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineCore\SwapChain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

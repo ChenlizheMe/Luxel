@@ -28,9 +28,8 @@ namespace Luxel
 	class LUXEL_API RenderPipeline
 	{
 	public:
-		RenderPipeline(Device* d, const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo);
+		RenderPipeline(Device* const d, const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo);
 		~RenderPipeline();
-
 		RenderPipeline(const RenderPipeline&) = delete;
 		void operator=(const RenderPipeline&) = delete;
 
@@ -42,10 +41,9 @@ namespace Luxel
 		void CreateGraphicsPipeline(const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo);
 		void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
-		Device* device;
+		Device* const device;
 
 		VkPipeline graphicsPipeline;
 		VkShaderModule vertShaderModule, fragShaderModule;
-
 	};
 }
