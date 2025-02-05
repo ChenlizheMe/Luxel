@@ -30,12 +30,30 @@
     <ClInclude Include="src\pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\EngineCore\log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EngineCore\RenderPipeline.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EngineCore\Device.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EngineCore\Application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineCore\log.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineCore\RenderPipeline.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineCore\Device.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
