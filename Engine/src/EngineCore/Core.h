@@ -11,6 +11,8 @@
 	#endif
 #endif
 
+#define MAX_FRAMES_IN_FLIGHT 2
+
 #define ui32 uint32_t
 #define ui16 uint16_t
 

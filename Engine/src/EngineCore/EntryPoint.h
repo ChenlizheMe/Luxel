@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 {
 	Info("Start Luxel Engine.");
 	auto window = CreateApplication();
-	window->Init(1024, 1024, "Luxel Engine");
+	window->Init(1025, 1024, "Luxel Engine");
 	window->Run();
 	delete window;	
 }

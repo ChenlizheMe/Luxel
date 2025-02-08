@@ -57,7 +57,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>LUXEL_PLATFORM_WINDOWS;GLFW_INCLUDE_VULKAN;GLM_FORCE_RADIANS;GLM_FORCH_DEPTH_ZERO_TO_ONE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\src;G:\glfw-3.3.8.bin.WIN64\include;G:\VulkanSDK\1.3.246.1\Include\glm;G:\VulkanSDK\1.3.246.1\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\src;G:\GLFW\3.4\include;G:\GLM;G:\VulkanSDK\1.4.304.0\Include</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -75,7 +75,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>LUXEL_PLATFORM_WINDOWS;GLFW_INCLUDE_VULKAN;GLM_FORCE_RADIANS;GLM_FORCH_DEPTH_ZERO_TO_ONE;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\src;G:\glfw-3.3.8.bin.WIN64\include;G:\VulkanSDK\1.3.246.1\Include\glm;G:\VulkanSDK\1.3.246.1\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\src;G:\GLFW\3.4\include;G:\GLM;G:\VulkanSDK\1.4.304.0\Include</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>

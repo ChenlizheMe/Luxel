@@ -28,7 +28,12 @@ namespace Luxel
 		VkDevice GetDevice();
 		VkPhysicalDevice GetPhysicalDevice();
 		VkSurfaceKHR GetSurface();
+		VkQueue GetGraphicsQueue();
+		VkQueue GetPresentQueue();
 		QueueFamilyIndices GetQueueFamilyIndices();
+		VkCommandPool GetCommandPool();
+		ui32 FindMemoryType(ui32 typeFilter, VkMemoryPropertyFlags properties);
+		VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
 	private:
 		void CreateInstance(const char* appName);
@@ -80,6 +85,7 @@ namespace Luxel
 		QueueFamilyIndices queueFamilyIndices;
 		VkQueue graphicsQueue;
 		VkQueue presentQueue;
+		VkCommandPool commandPool;
 
 		const std::vector<const char*> globalExtensions = {
 

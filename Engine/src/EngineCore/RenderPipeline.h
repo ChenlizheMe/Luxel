@@ -6,6 +6,7 @@
 
 #include "log.h"
 #include "Device.h"
+#include "SwapChain.h"
 
 namespace Luxel
 {
@@ -13,7 +14,6 @@ namespace Luxel
 	{
 		VkViewport viewport;
 		VkRect2D scissor;
-		VkPipelineViewportStateCreateInfo viewportInfo;
 		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
 		VkPipelineMultisampleStateCreateInfo multisampleInfo;
@@ -28,12 +28,16 @@ namespace Luxel
 	class LUXEL_API RenderPipeline
 	{
 	public:
-		RenderPipeline(Device* const d, const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo);
+		RenderPipeline(Device* const d, SwapChain* const s, const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo);
 		~RenderPipeline();
 		RenderPipeline(const RenderPipeline&) = delete;
 		void operator=(const RenderPipeline&) = delete;
 
-		static PipelineConfigInfo DefaultPipelineConfigInfo(ui32 width, ui32 height);
+		static PipelineConfigInfo DefaultPipelineConfigInfo(const VkPipelineLayout& pipelineLayout, ui32 width, ui32 height, const VkRenderPass& renderPass);
+
+		void Bind(VkCommandBuffer commandBuffer);
+
+		VkPipeline graphicsPipeline;
 
 	private:
 		static std::vector<char> readFile(const std::string& filePath);
@@ -42,8 +46,8 @@ namespace Luxel
 		void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
 		Device* const device;
+		SwapChain* const swapChain;
 
-		VkPipeline graphicsPipeline;
 		VkShaderModule vertShaderModule, fragShaderModule;
 	};
 }

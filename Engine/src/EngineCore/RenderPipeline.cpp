@@ -4,95 +4,102 @@
 
 namespace Luxel
 {
-	PipelineConfigInfo RenderPipeline::DefaultPipelineConfigInfo(ui32 width, ui32 height)
+	PipelineConfigInfo RenderPipeline::DefaultPipelineConfigInfo(const VkPipelineLayout& pipelineLayout, ui32 width, ui32 height, const VkRenderPass& renderPass)
 	{
 		Info("Use default pipeline config info.");
-		PipelineConfigInfo config{};
+		PipelineConfigInfo configInfo{};
 		
 		// vertex input
-		config.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		config.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-		config.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
-		config.inputAssemblyInfo.pNext = nullptr;
-		config.inputAssemblyInfo.flags = 0;
+		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+		configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
+		configInfo.inputAssemblyInfo.pNext = nullptr;
+		configInfo.inputAssemblyInfo.flags = 0;
 
 		// viewport
-		config.viewport.x = 0.f;
-		config.viewport.y = 0.f;
-		config.viewport.width = static_cast<float>(width);
-		config.viewport.height = static_cast<float>(height);
-		config.viewport.minDepth = 0.f;
-		config.viewport.maxDepth = 1.f;
+		configInfo.viewport.x = 0.f;
+		configInfo.viewport.y = 0.f;
+		configInfo.viewport.width = static_cast<float>(width);
+		configInfo.viewport.height = static_cast<float>(height);
+		configInfo.viewport.minDepth = 0.f;
+		configInfo.viewport.maxDepth = 1.f;
 
-		config.scissor.offset = { 0, 0 };
-		config.scissor.extent = { width, height };
-		
-		config.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-		config.viewportInfo.viewportCount = 1;
-		config.viewportInfo.scissorCount = 1;
-		config.viewportInfo.pViewports = &config.viewport;
-		config.viewportInfo.pScissors = &config.scissor;
+		configInfo.scissor.offset = { 0, 0 };
+		configInfo.scissor.extent = { width, height };
 
 		// rasterization
-		config.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-		config.rasterizationInfo.depthClampEnable = VK_FALSE;
-		config.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
-		config.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
-		config.rasterizationInfo.lineWidth = 1.0f;
-		config.rasterizationInfo.cullMode = VK_CULL_MODE_NONE;
-		config.rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
-		config.rasterizationInfo.depthBiasEnable = VK_FALSE;
-		config.rasterizationInfo.depthBiasConstantFactor = 0.f;
-		config.rasterizationInfo.depthBiasClamp = 0.f;
-		config.rasterizationInfo.depthBiasSlopeFactor = 0.f;
+		configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+		configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
+		configInfo.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
+		configInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
+		configInfo.rasterizationInfo.lineWidth = 1.0f;
+		configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+		configInfo.rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		configInfo.rasterizationInfo.depthBiasEnable = VK_FALSE;
+		configInfo.rasterizationInfo.depthBiasConstantFactor = 0.f;
+		configInfo.rasterizationInfo.depthBiasClamp = 0.f;
+		configInfo.rasterizationInfo.depthBiasSlopeFactor = 0.f;
 
 		// multisample
-		config.multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-		config.multisampleInfo.sampleShadingEnable = VK_FALSE;
-		config.multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-		config.multisampleInfo.minSampleShading = 1.0f;
-		config.multisampleInfo.pSampleMask = nullptr;
-		config.multisampleInfo.alphaToCoverageEnable = VK_FALSE;
-		config.multisampleInfo.alphaToOneEnable = VK_FALSE;
+		configInfo.multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+		configInfo.multisampleInfo.sampleShadingEnable = VK_FALSE;
+		configInfo.multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		configInfo.multisampleInfo.minSampleShading = 1.0f;
+		configInfo.multisampleInfo.pSampleMask = nullptr;
+		configInfo.multisampleInfo.alphaToCoverageEnable = VK_FALSE;
+		configInfo.multisampleInfo.alphaToOneEnable = VK_FALSE;
 
 		// color blend
-		config.colorBlendAttachment.colorWriteMask =
+		configInfo.colorBlendAttachment.colorWriteMask =
 			VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT |
 			VK_COLOR_COMPONENT_A_BIT;
-		config.colorBlendAttachment.blendEnable = VK_FALSE;
-		config.colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-		config.colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
-		config.colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-		config.colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-		config.colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-		config.colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+		configInfo.colorBlendAttachment.blendEnable = VK_FALSE;
+		configInfo.colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+		configInfo.colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+		configInfo.colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+		configInfo.colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+		configInfo.colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		configInfo.colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 
-		config.colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-		config.colorBlendInfo.logicOpEnable = VK_FALSE;
-		config.colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;  // Optional
-		config.colorBlendInfo.attachmentCount = 1;
-		config.colorBlendInfo.pAttachments = &config.colorBlendAttachment;
-		config.colorBlendInfo.blendConstants[0] = 0.0f;  // Optional
-		config.colorBlendInfo.blendConstants[1] = 0.0f;  // Optional
-		config.colorBlendInfo.blendConstants[2] = 0.0f;  // Optional
-		config.colorBlendInfo.blendConstants[3] = 0.0f;  // Optional
+		configInfo.colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+		configInfo.colorBlendInfo.logicOpEnable = VK_FALSE;
+		configInfo.colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;  // Optional
+		configInfo.colorBlendInfo.attachmentCount = 1;
+		configInfo.colorBlendInfo.pAttachments = &configInfo.colorBlendAttachment;
+		configInfo.colorBlendInfo.blendConstants[0] = 0.0f;  // Optional
+		configInfo.colorBlendInfo.blendConstants[1] = 0.0f;  // Optional
+		configInfo.colorBlendInfo.blendConstants[2] = 0.0f;  // Optional
+		configInfo.colorBlendInfo.blendConstants[3] = 0.0f;  // Optional
 
-		config.depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-		config.depthStencilInfo.depthTestEnable = VK_TRUE;
-		config.depthStencilInfo.depthWriteEnable = VK_TRUE;
-		config.depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS;
-		config.depthStencilInfo.depthBoundsTestEnable = VK_FALSE;
-		config.depthStencilInfo.minDepthBounds = 0.0f;  // Optional
-		config.depthStencilInfo.maxDepthBounds = 1.0f;  // Optional
-		config.depthStencilInfo.stencilTestEnable = VK_FALSE;
-		config.depthStencilInfo.front = {};  // Optional
-		config.depthStencilInfo.back = {};   // Optional
+		configInfo.depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+		configInfo.depthStencilInfo.depthTestEnable = VK_TRUE;
+		configInfo.depthStencilInfo.depthWriteEnable = VK_TRUE;
+		configInfo.depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS;
+		configInfo.depthStencilInfo.depthBoundsTestEnable = VK_FALSE;
+		configInfo.depthStencilInfo.minDepthBounds = 0.0f;  // Optional
+		configInfo.depthStencilInfo.maxDepthBounds = 1.0f;  // Optional
+		configInfo.depthStencilInfo.stencilTestEnable = VK_FALSE;
+		configInfo.depthStencilInfo.front = {};  // Optional
+		configInfo.depthStencilInfo.back = {};   // Optional
 
-		config.pipelineLayout = nullptr;
-		config.renderPass = nullptr;
-		config.subpass = 0;
+		configInfo.pipelineLayout = nullptr;
+		configInfo.renderPass = nullptr;
+		configInfo.subpass = 0;
 
-		return config;
+		configInfo.renderPass = renderPass;
+		configInfo.pipelineLayout = pipelineLayout;
+
+		return configInfo;
+	}
+
+	void RenderPipeline::Bind(VkCommandBuffer commandBuffer)
+	{
+		Info("Bind graphics pipeline with command buffers.");
+		if (graphicsPipeline == VK_NULL_HANDLE) {
+			Error("Cannot bind graphics pipeline: no graphics pipeline provided.");
+			throw std::runtime_error("Cannot bind graphics pipeline: no graphics pipeline provided.");
+		}
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 	}
 
 	std::vector<char> RenderPipeline::readFile(const std::string& filePath)
@@ -136,7 +143,7 @@ namespace Luxel
 		CreateShaderModule(vert, &vertShaderModule);
 		CreateShaderModule(frag, &fragShaderModule);
 
-		VkPipelineShaderStageCreateInfo shadersCreateInfo[2];
+		VkPipelineShaderStageCreateInfo shadersCreateInfo[2]{};
 		shadersCreateInfo[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shadersCreateInfo[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
 		shadersCreateInfo[0].module = vertShaderModule;
@@ -151,6 +158,14 @@ namespace Luxel
 		shadersCreateInfo[1].pNext = nullptr;
 		shadersCreateInfo[1].pSpecializationInfo = nullptr;
 
+
+		VkPipelineViewportStateCreateInfo viewportInfo{};
+		viewportInfo.viewportCount = 1;
+		viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		viewportInfo.scissorCount = 1;
+		viewportInfo.pViewports = &configInfo.viewport;
+		viewportInfo.pScissors = &configInfo.scissor;
+
 		VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{};
 		vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputCreateInfo.vertexAttributeDescriptionCount = 0;
@@ -164,16 +179,16 @@ namespace Luxel
 		pipelineCreateInfo.pStages = shadersCreateInfo;
 		pipelineCreateInfo.pVertexInputState = &vertexInputCreateInfo;
 		pipelineCreateInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-		pipelineCreateInfo.pViewportState = &configInfo.viewportInfo;
+		pipelineCreateInfo.pViewportState = &viewportInfo;
 		pipelineCreateInfo.pRasterizationState = &configInfo.rasterizationInfo;
 		pipelineCreateInfo.pMultisampleState = &configInfo.multisampleInfo;
 		pipelineCreateInfo.pColorBlendState = &configInfo.colorBlendInfo;
 		pipelineCreateInfo.pDepthStencilState = &configInfo.depthStencilInfo;
 		pipelineCreateInfo.pDynamicState = nullptr;
 
-		// pipelineCreateInfo.layout = configInfo.pipelineLayout;
-		// pipelineCreateInfo.renderPass = configInfo.renderPass;
-		// pipelineCreateInfo.subpass = configInfo.subpass;
+		pipelineCreateInfo.layout = configInfo.pipelineLayout;
+		pipelineCreateInfo.renderPass = configInfo.renderPass;
+		pipelineCreateInfo.subpass = configInfo.subpass;
 
 		pipelineCreateInfo.basePipelineIndex = -1;
 		pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -202,7 +217,7 @@ namespace Luxel
 		}
 	}
 
-	RenderPipeline::RenderPipeline(Device* const d, const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo) : device{d}
+	RenderPipeline::RenderPipeline(Device* const d, SwapChain* const s, const std::string& vertPath, const std::string& fragPath, const PipelineConfigInfo& configInfo) : device{ d }, swapChain{ s }
 	{
 		CreateGraphicsPipeline(vertPath, fragPath, configInfo);
 	}

@@ -21,6 +21,16 @@ namespace Luxel
 		SwapChain(const SwapChain&) = delete;
 		void operator=(const SwapChain&) = delete;
 
+		ui32 currentFrame;
+		ui32 swapChainImageCount;
+
+		VkExtent2D swapChainExtent;
+		std::vector<VkFramebuffer> swapChainFramebuffers;
+
+		VkRenderPass GetRenderPass();
+		VkResult AccaquireNextImage(ui32* imageIndex);
+		VkResult SubmitCommandBuffers(VkCommandBuffer* commandBuffer, ui32* imageIndex);
+
 	private:
 		void CreateSwapChain();
 		void CreateImageViews();
@@ -34,14 +44,28 @@ namespace Luxel
 		VkSurfaceFormatKHR ChooseSwapChainFormat(const std::vector<VkSurfaceFormatKHR>& formats);
 		VkPresentModeKHR ChooseSwapChainPresentMode(const std::vector<VkPresentModeKHR>& presentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		VkFormat FindDepthFormat();
 
 		GLFWwindow* const window;
 		Device* const device;
 
 		VkSwapchainKHR instance;
 		VkFormat swapChainFormat;
-		VkExtent2D swapChainExtent;
+		VkPresentModeKHR swapChainPresentMode;
 
-		std::vector<VkImage> imageViews;
+		VkRenderPass renderPass;
+
+		std::vector<VkImage> colorImages;
+		std::vector<VkImageView> colorImageViews;
+
+		std::vector<VkImage> depthImages;
+		std::vector<VkDeviceMemory> depthImagesMemory;
+		std::vector<VkImageView> depthImageViews;
+
+		// semaphores
+		std::vector<VkSemaphore> imageAvailableSemaphores;
+		std::vector<VkSemaphore> renderFinishedSemaphores;
+		std::vector<VkFence> inFlightFences;
+		std::vector<VkFence> imagesInFlight;
 	};
 }

@@ -9,6 +9,7 @@
 #include <optional>
 #include <limits>
 #include <algorithm>
+#include <array>
 
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>

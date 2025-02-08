@@ -20,6 +20,9 @@ namespace Luxel
 	Device::~Device()
 	{
 		Info("Unload device.");
+
+		vkDestroyCommandPool(device, commandPool, nullptr);
+
 		vkDestroyDevice(device, nullptr);
 
 		if (enableValidationLayers) {
@@ -45,9 +48,37 @@ namespace Luxel
 		return surface;
 	}
 
+	VkQueue Device::GetGraphicsQueue()
+	{
+		return graphicsQueue;
+	}
+
+	VkQueue Device::GetPresentQueue()
+	{
+		return presentQueue;
+	}
+
 	QueueFamilyIndices Device::GetQueueFamilyIndices()
 	{
 		return queueFamilyIndices;
+	}
+
+	VkCommandPool Device::GetCommandPool()
+	{
+		return commandPool;
+	}
+
+	ui32 Device::FindMemoryType(ui32 typeFilter, VkMemoryPropertyFlags properties)
+	{
+		VkPhysicalDeviceMemoryProperties memoryProperties;
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+		for (ui32 i = 0; i < memoryProperties.memoryTypeCount; i++) {
+			if ((typeFilter & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+				return i;
+			}
+		}
+		Error("Failed to find suitable memory type.");
+		throw std::runtime_error("Failed to find suitable memory type.");
 	}
 
 	void Device::CreateInstance(const char* appName)
@@ -238,7 +269,10 @@ namespace Luxel
 		createInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 		createInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-		// not implement right now.
+		if (vkCreateCommandPool(device, &createInfo, nullptr, &commandPool) != VK_SUCCESS) {
+			Error("Failed to create command pool.");
+			throw std::runtime_error("Failed to create command pool.");
+		}
 	}
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL Device::debugCallback(
@@ -296,6 +330,21 @@ namespace Luxel
 		if (func != nullptr) {
 			func(instance, debugMessenger, pAllocator);
 		}
+	}
+
+	VkFormat Device::FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
+	{
+		for (VkFormat format : candidates) {
+			VkFormatProperties props;
+			vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
+			if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
+				return format;
+			}
+			else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
+				return format;
+			}
+		}
+		return VkFormat();
 	}
 
 	void Device::PopulateDebugUtilsMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
